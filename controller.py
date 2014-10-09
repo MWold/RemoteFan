@@ -32,24 +32,28 @@
 # SOFTWARE.
 #----------------------------END DETAILS----------------------------------------
 
-# Type of humidity sensor, here we're using an Adafruit_DHT.DHT11
-DHT_TYPE = Adafruit_DHT.DHT11
+import sys
+import time
+import datetime
 
-# Switch this for the GPIO pin you've used on your PI
-DHT_PIN = 4
+import Adafruit_DHT
+
+import codes
 
 # Sampling frequency (in seconds)
 FREQUENCY_SECONDS = 15
 
 while True:
   # Read sensor
-  humidity, temp = Adafruit.DHT.read(DHT_TYPE, DHT_PIN)
+  humidity, temp = Adafruit.DHT.read(codes.DHT_TYPE, codes.DHT_PIN)
 
   # If we can't get a reading we skip this one, sometimes we can't get a
   # measurement at the current time because reasons.
   if humidity is None or temp is None:
     time.sleep(2)
     continue
+
+  print 'Humidity={0:0.1f}*C%'.format(humidity)
 
   # Wait until it's time to read the sensor again
   time.sleep(FREQUENCY_SECONDS)
