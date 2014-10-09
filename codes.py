@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import Adafruit_DHT
+
 # Humidity sensor type
 DHT_TYPE = Adafruit_DHT.DHT11
 

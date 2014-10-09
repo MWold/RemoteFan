@@ -35,6 +35,7 @@
 import sys
 import time
 import datetime
+import subprocess
 
 import Adafruit_DHT
 
@@ -43,9 +44,12 @@ import codes
 # Sampling frequency (in seconds)
 FREQUENCY_SECONDS = 15
 
+# Is the fan turned on?
+FAN_IS_ON = False
+
 while True:
   # Read sensor
-  humidity, temp = Adafruit.DHT.read(codes.DHT_TYPE, codes.DHT_PIN)
+  humidity, temp = Adafruit_DHT.read(codes.DHT_TYPE, codes.DHT_PIN)
 
   # If we can't get a reading we skip this one, sometimes we can't get a
   # measurement at the current time because reasons.
@@ -53,7 +57,18 @@ while True:
     time.sleep(2)
     continue
 
-  print 'Humidity={0:0.1f}*C%'.format(humidity)
+  # Right now we just print it to standard output
+  print 'Humidity={0:0.1f}%'.format(humidity)
+
+  if humidity >= 40.0 and not FAN_IS_ON:
+    print 'Turning fan on!'
+    FAN_IS_ON = True
+
+  if humidity < 39.9 and FAN_IS_ON:
+    print 'Turning fan off!'
+    FAN_IS_ON = False
+
+  # The type of humidity is float
 
   # Wait until it's time to read the sensor again
   time.sleep(FREQUENCY_SECONDS)
