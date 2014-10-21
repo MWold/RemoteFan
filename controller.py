@@ -47,6 +47,14 @@ FREQUENCY_SECONDS = 15
 # Is the fan turned on?
 FAN_IS_ON = False
 
+# Toggle fan
+def toggle_fan(state):
+    if state:
+        subprocess.call(codes.FAN_ON)
+    else:
+
+    return
+
 while True:
   # Read sensor
   humidity, temp = Adafruit_DHT.read(codes.DHT_TYPE, codes.DHT_PIN)
@@ -59,6 +67,7 @@ while True:
 
   # Right now we just print it to standard output
   print 'Humidity={0:0.1f}%'.format(humidity)
+  toggle_fan(True)
 
   if humidity >= 40.0 and not FAN_IS_ON:
     print 'Turning fan on!'

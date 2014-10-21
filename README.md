@@ -5,7 +5,7 @@ Because buying automatic extractor fans is hard.
 ## dependencies
 * [python-dev](https://packages.debian.org/wheezy/python-dev)
 * [wiringpi](http://wiringpi.com/)
-* [wiringpi](https://github.com/ninjablocks/433Utils)
+* [433 Utils](https://github.com/ninjablocks/433Utils)
 
 ## hardware requirements
 * raspberry-pi (duh)
