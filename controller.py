@@ -66,7 +66,6 @@ while True:
 
   # Right now we just print it to standard output
   print 'Humidity={0:0.1f}%'.format(humidity)
-  toggle_fan(True)
 
   if humidity >= 40.0 and not FAN_IS_ON:
     print 'Turning fan on!'
@@ -76,6 +75,7 @@ while True:
     print 'Turning fan off!'
     FAN_IS_ON = False
 
+  toggle_fan(FAN_IS_ON)
   # The type of humidity is float
 
   # Wait until it's time to read the sensor again
