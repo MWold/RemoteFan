@@ -50,10 +50,9 @@ FAN_IS_ON = False
 # Toggle fan
 def toggle_fan(state):
     if state:
-        subprocess.call(codes.FAN_ON)
+        subprocess.call(['sudo',codes.SENDER,codes.FAN_ON])
     else:
-
-    return
+        subprocess.call(['sudo',codes.SENDER,codes.FAN_OFF])
 
 while True:
   # Read sensor
