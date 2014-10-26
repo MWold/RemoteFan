@@ -8,7 +8,7 @@
 # Based on code from Adafruit Industries
 # See below for details
 
-#-----------------------------BEGIN DETAILS-------------------------------------
+#----------------------------- BEGIN DETAILS -----------------------------------
 
 # Copyright (c) 2014 Adafruit Industries
 # Author: Tony DiCola
@@ -30,7 +30,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#----------------------------END DETAILS----------------------------------------
+#---------------------------- END DETAILS --------------------------------------
 
 import sys
 import time
@@ -41,11 +41,25 @@ import Adafruit_DHT
 
 import codes
 
+#----------------------------- Constants ---------------------------------------
 # Sampling frequency (in seconds)
 FREQUENCY_SECONDS = 15
 
+# dh at which humidity is considered to be stable (in percent, I think...)
+STABLE_LEVEL = 20
+
+#----------------------------- Variables ---------------------------------------
+
 # Is the fan turned on?
 FAN_IS_ON = False
+
+# Previous humidity reading
+previous_reading = 0.0
+
+# Change in humidity
+humidity_change = 0.0
+
+#----------------------------- Functionality -----------------------------------
 
 # Toggle fan
 def toggle_fan(state):
@@ -53,6 +67,12 @@ def toggle_fan(state):
         subprocess.call(['sudo',codes.SENDER,codes.FAN_ON])
     else:
         subprocess.call(['sudo',codes.SENDER,codes.FAN_OFF])
+
+# Calculate rate of change of humidity
+def calc_change_rate(humidity):
+    if previous_reading is not 0.0:
+        humidity_change = humidity/previous_reading
+    previous_reading = humidity
 
 while True:
   # Read sensor
@@ -64,7 +84,7 @@ while True:
     time.sleep(2)
     continue
 
-  # Right now we just print it to standard output
+  # Printing to standard output for testing purposes.
   print 'Humidity={0:0.1f}%'.format(humidity)
 
   if humidity >= 40.0 and not FAN_IS_ON:
