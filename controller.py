@@ -40,24 +40,16 @@ import subprocess
 import Adafruit_DHT
 
 import codes
+import humidity
 
 #----------------------------- Constants ---------------------------------------
 # Sampling frequency (in seconds)
 FREQUENCY_SECONDS = 15
 
-# dh at which humidity is considered to be stable (in percent, I think...)
-STABLE_LEVEL = 20
-
 #----------------------------- Variables ---------------------------------------
 
 # Is the fan turned on?
-FAN_IS_ON = False
-
-# Previous humidity reading
-previous_reading = 0.0
-
-# Change in humidity
-humidity_change = 0.0
+fan_is_on = False
 
 #----------------------------- Functionality -----------------------------------
 
@@ -68,18 +60,12 @@ def toggle_fan(state):
     else:
         subprocess.call(['sudo',codes.SENDER,codes.FAN_OFF])
 
-# Calculate rate of change of humidity
-def calc_change_rate(humidity):
-    if previous_reading is not 0.0:
-        humidity_change = humidity/previous_reading
-    previous_reading = humidity
-
 while True:
   # Read sensor
   humidity, temp = Adafruit_DHT.read(codes.DHT_TYPE, codes.DHT_PIN)
 
   # If we can't get a reading we skip this one, sometimes we can't get a
-  # measurement at the current time because reasons.
+  # measurement because reasons.
   if humidity is None or temp is None:
     time.sleep(2)
     continue
@@ -87,16 +73,18 @@ while True:
   # Printing to standard output for testing purposes.
   print 'Humidity={0:0.1f}%'.format(humidity)
 
-  if humidity >= 40.0 and not FAN_IS_ON:
+  # Record the reading
+  record_reading(humidity)
+
+  if humidity >= 40.0 and is_fluctuating() and not fan_is_on:
     print 'Turning fan on!'
-    FAN_IS_ON = True
+    fan_is_on = True
 
-  if humidity < 39.9 and FAN_IS_ON:
+  if humidity < 40.0 and not is_fluctuating() and fan_is_on:
     print 'Turning fan off!'
-    FAN_IS_ON = False
+    fan_is_on = False
 
-  toggle_fan(FAN_IS_ON)
-  # The type of humidity is float
+  toggle_fan(fan_is_on)
 
   # Wait until it's time to read the sensor again
   time.sleep(FREQUENCY_SECONDS)

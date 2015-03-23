@@ -7,30 +7,31 @@
 import time
 import datetime
 import statistics
+from collections import deque
 
 #----------------------------- Constants ---------------------------------------
-# dh at which humidity is considered to be stable
-STABLE_LEVEL = 20
+# Standard deviation limit, if the sd of the humidity data set is above this
+# limit the humidity is considered to be fluctuating.
+SD_LIMIT = 2
 
-# dh at which humidity is considered to be changing
-CHANGING_LEVEL = 50
+# Maximum number readings to store in data set
+DATA_SET_LIMIT = 10
 
 #----------------------------- Variables ---------------------------------------
-previous_reading = 0.0
-
-humidity_change = 0.0
-
-standard_deviation = 0.0
-
-humidity_readings = []
-
-# Use some sort of push/pop combination to remove oldest value when new value is inserted
-
-#----------------------------- Attributes --------------------------------------
-def get_changing_level():
-    return CHANGING_LEVEL
-
-def get_stable_level():
-    return STABLE_LEVEL
+humidity_readings = deque(maxlen=DATA_SET_LIMIT)
 
 #----------------------------- Implementation ----------------------------------
+def record_reading(reading):
+    # Append reading to back, deques readings automatically
+    humidity_readings.append(reading)
+
+def calculate_deviation():
+    if len(humidity_readings) is not DATA_SET_LIMIT:
+        return 0.0 # Data set not populated
+    print 'Standard deviation of data={0:0.1f}%'.format(stdev(humidity))
+    return stdev(humidity)
+
+def is_fluctuating():
+    if calculate_deviation > SD_LIMIT:
+        return True
+    return False
