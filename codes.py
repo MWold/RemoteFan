@@ -13,4 +13,4 @@ FAN_ON = "1394007"
 FAN_OFF = "1394004"
 
 # codesender
-SENDER = "./codesender"
+SENDER = "./codesend"
